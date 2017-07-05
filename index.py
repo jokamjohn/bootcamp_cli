@@ -1,4 +1,5 @@
 import click
+import requests
 
 
 # The entry point of the app
@@ -9,6 +10,11 @@ def cli():
     get_intro()
 
     news_source = click.prompt("Please select a news source by entering its number or press enter for BBC", default=1)
+
+    if news_source in news_dict.keys():
+        get_news_articles(news_dict[news_source])
+    else:
+        click.echo(click.style("Wrong input try again", fg='red'))
 
 
 # Return the news sources
@@ -30,3 +36,37 @@ def get_intro():
         3 - Bloomberg
         4 - BuzzFeed
     ''', fg='blue')
+
+
+# Return the intro message to show the user
+def get_intro():
+    click.secho("~" * 130, fg='blue')
+    click.secho("Welcome to News-Breaker", fg='green')
+    click.secho("~" * 130, fg='blue')
+    click.echo("\n")
+
+    click.secho("NEWS SOURCES", fg='green')
+    click.secho('''        
+        1 - BBC
+        2 - AL Jazeera 
+        3 - Bloomberg
+        4 - BuzzFeed
+    ''', fg='blue')
+
+
+# Function to get news articles from the specified source, BBC has the default.
+def get_news_articles(source):
+    data = requests.get(
+        "https://newsapi.org/v1/articles?source=" + source + "&apiKey=ba4d03d4a6f84f10962a79fd977e43b2")
+    if data.status_code == 200:
+        news_json = data.json()
+        articles = news_json["articles"]
+        for article in articles:
+            author = article['author']
+            title = article['title']
+            description = article['description']
+
+            click.echo_via_pager(" TITLE: {} \n DESCRIPTION: {} \n AUTHOR: {}".format(title, description, author))
+            click.secho("=" * 130, fg='blue')
+    else:
+        click.echo("An error occurred try again later")
