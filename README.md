@@ -1,5 +1,8 @@
 # NEWS BREAKER
 
+[![BCH compliance](https://bettercodehub.com/edge/badge/jokamjohn/bootcamp_cli?branch=master)](https://bettercodehub.com/)
+
+
 News breaker is a command line application written in Python using the click module.
 
 The application uses the [News API](https://newsapi.org) to provided news articles
